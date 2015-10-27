@@ -55,7 +55,8 @@ void setup_leds(void)
     OCR1B = LED_BRIGHTNESS;    // Output compare register 1B
     OCR1C = LED_BRIGHTNESS;    // Output compare register 1C
     // LEDs: LED_A -> PORTB6, LED_B -> PORTB7
-    DDRB  |= (1<<6) | (1<<7);
+    // DDRB  |= (1<<6) | (1<<7);
+    DDRB &= ~((1<<6) | (1<<7));
     PORTB  &= ~((1<<6) | (1<<7));
 }
 #endif
