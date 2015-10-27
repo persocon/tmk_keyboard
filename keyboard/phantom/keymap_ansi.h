@@ -13,60 +13,53 @@ static const uint8_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         TRNS,     TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,      TRNS,TRNS,SLEP, \
         TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,MUTE,VOLD,VOLU,TRNS,      TRNS,TRNS,TRNS, \
         TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,MSTP,MPLY,MPRV,MNXT,MSEL,      TRNS,TRNS,TRNS, \
-        TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,     TRNS,      TRNS,TRNS,TRNS, \
-        TRNS,     TRNS,TRNS,CALC,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,     CAPS,      TRNS,TRNS,TRNS, \
+        TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,     TRNS,      FN6, FN7, FN8,  \
+        TRNS,     TRNS,TRNS,CALC,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,     CAPS,      FN9,TRNS, FN10, \
         TRNS,TRNS,TRNS,               TRNS,               TRNS,TRNS,TRNS,TRNS,      TRNS,TRNS,TRNS),
-    /* 2: custom FN6 to Develop on Lightroom */
-    KEYMAP_ANSI(\
-        TRNS,     TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,      TRNS,TRNS,TRNS, \
-        TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,      TRNS,TRNS,TRNS, \
-        TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,      TRNS,TRNS,TRNS, \
-        TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,     TRNS,      TRNS,TRNS,TRNS, \
-        TRNS,     TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,     TRNS,      TRNS,TRNS,FN6, \
-        TRNS,TRNS,TRNS,               TRNS,               TRNS,TRNS,TRNS,TRNS,      TRNS,TRNS,TRNS),
-    /* 2: custom FN7 to Library on Lightroom */
-    KEYMAP_ANSI(\
-        TRNS,     TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,      TRNS,TRNS,TRNS, \
-        TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,      TRNS,TRNS,TRNS, \
-        TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,      TRNS,TRNS,TRNS, \
-        TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,     TRNS,      TRNS,TRNS,TRNS, \
-        TRNS,     TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,     TRNS,      FN7,TRNS,TRNS, \
-        TRNS,TRNS,TRNS,               TRNS,               TRNS,TRNS,TRNS,TRNS,      TRNS,TRNS,TRNS)
 };
 
 enum macro_id {
-    CHUCK,
-    LIGHTROOM_DEVELOP,
-    LIGHTROOM_LIBRARY
+    LIGHTROOM_EXPORT,
+    LIGHTROOM_TOGGLE_LIB_DEV
 };
 
 static const uint16_t PROGMEM fn_actions[] = {
     [0] = ACTION_LAYER_MOMENTARY(1),
-    [4] = ACTION_LAYER_MOMENTARY(2),
-    [5] = ACTION_LAYER_MOMENTARY(3),
-    [1] = ACTION_MACRO(CHUCK),                          // Macro: OPEN CHUCK
-    [6] = ACTION_MACRO(LIGHTROOM_DEVELOP),              // Macro: Lightroom Develop
-    [7] = ACTION_MACRO(LIGHTROOM_LIBRARY),              // Macro: Lightroom Develop
+
+    [2] = ACTION_MACRO(LIGHTROOM_EXPORT),              // Macro: Lightroom Export
+    [1] = ACTION_MACRO(LIGHTROOM_TOGGLE_LIB_DEV)       // Macro: Lightroom Develop Library Toggle
+
 };
 
 /*
  * Macro definition
  */
+bool lightroom_toggle_ld;
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 {
     switch (id) {
-        case CHUCK:
+        case LIGHTROOM_EXPORT:
             return (record->event.pressed ?
-                    MACRO( D(LCTL), D(SPC), END ) :
-                    MACRO( U(LCTL), U(SPC), END ) );
-        case LIGHTROOM_DEVELOP:
-            return (record->event.pressed ?
-                    MACRO( D(LGUI), D(LALT), D(2), END ) :
-                    MACRO( U(LGUI), U(LALT), U(2), END ) );
-        case LIGHTROOM_LIBRARY:
-            return (record->event.pressed ?
-                    MACRO( D(LGUI), D(LALT), D(1), END ) :
-                    MACRO( U(LGUI), U(LALT), U(1), END ) );            
+                    MACRO( D(LGUI), D(LSFT), D(E), END ) :
+                    MACRO( U(LGUI), U(LSFT), U(E), END ) );
+        case LIGHTROOM_TOGGLE_LIB_DEV:
+            if (lightroom_toggle_ld){
+                // GO TO LIBRARY
+                if(record->event.pressed){
+                    return MACRO( D(LGUI), D(LALT), D(1), END );
+                }else{
+                    lightroom_toggle_ld = false;
+                    return MACRO( U(LGUI), U(LALT), U(1), END );
+                }
+            }else{
+                // GO TO DEVELOP
+                if(record->event.pressed){
+                    return MACRO( D(LGUI), D(LALT), D(2), END );
+                }else{
+                    lightroom_toggle_ld = true;
+                    return MACRO( U(LGUI), U(LALT), U(2), END );
+                }
+            }
     }
     return MACRO_NONE;
 }
